@@ -162,7 +162,7 @@ module ActiveRecord
               scope.includes! item.includes_values
             end
 
-            scope.unscope!(*item.unscope_values)
+            # scope.unscope!(*item.unscope_values) - # TRH - causes problems with paranoia and belongs_to-with_deleted
             scope.where_values += item.where_values
             scope.bind_values  += item.bind_values
             scope.order_values |= item.order_values

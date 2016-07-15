@@ -15,6 +15,14 @@ module ActiveRecord
           scope = super
           reflection.chain.drop(1).each do |reflection|
             relation = reflection.klass.all
+
+            # TRH reverting https://github.com/rails/rails/commit/449241cc30545783419bd8f3cbc7b81137316001#diff-1ed2907b3b8f148c2533558a77673ffa
+            # removing this caused problems for paranoia belongs_to associations that include with_deleted
+            reflection_scope = reflection.scope
+            if reflection_scope && reflection_scope.arity.zero?
+              relation = relation.merge(reflection_scope)
+            end
+
             scope.merge!(
               relation.except(:select, :create_with, :includes, :preload, :joins, :eager_load)
             )
